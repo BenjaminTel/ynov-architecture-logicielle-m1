@@ -1,6 +1,9 @@
 package org.example.cardservice.service.impl;
 
+import org.example.cardservice.account.RestAccount;
+import org.example.cardservice.dto.AccountDto;
 import org.example.cardservice.entity.Card;
+import org.example.cardservice.exception.ResourceNotFoundException;
 import org.example.cardservice.repository.CardRepository;
 import org.example.cardservice.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,9 @@ public class CardServiceImpl implements CardService {
 
     @Autowired
     private CardRepository cardRepository;
+
+    @Autowired
+    private RestAccount restAccount;
 
     public List<Card> getAllCards() {
         return cardRepository.findAll();
@@ -27,6 +33,10 @@ public class CardServiceImpl implements CardService {
     }
 
     public Card saveCard(Card card) {
+        AccountDto accountDto = restAccount.getAccountById(card.getAccountId());
+        if (accountDto == null) {
+            throw new ResourceNotFoundException("Account not found");
+        }
         return cardRepository.save(card);
     }
 

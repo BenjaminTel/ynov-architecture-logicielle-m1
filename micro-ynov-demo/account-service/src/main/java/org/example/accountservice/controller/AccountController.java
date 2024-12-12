@@ -1,6 +1,7 @@
 package org.example.accountservice.controller;
 
 
+import org.example.accountservice.dto.AccountDto;
 import org.example.accountservice.entity.Account;
 import org.example.accountservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public Account getAccountById(@PathVariable Long id) {
+    public AccountDto getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id);
     }
 
