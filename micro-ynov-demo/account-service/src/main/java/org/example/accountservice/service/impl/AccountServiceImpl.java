@@ -3,6 +3,7 @@ package org.example.accountservice.service.impl;
 import org.example.accountservice.component.RestLoan;
 import org.example.accountservice.dto.AccountDto;
 import org.example.accountservice.entity.Account;
+import org.example.accountservice.kafka.AccountKafkaProducer;
 import org.example.accountservice.repository.AccountRepository;
 import org.example.accountservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private RestLoan restLoan;
+
+    @Autowired
+    private AccountKafkaProducer accountKafkaProducer;
 
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
@@ -49,6 +53,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public void deleteAccount(Long id) {
+        accountKafkaProducer.sendAccountDeleteEvent(id);
         accountRepository.deleteById(id);
     }
 }

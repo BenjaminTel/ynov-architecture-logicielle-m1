@@ -9,5 +9,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     List<Card>findByAccountId(Long accountId);
 
+    void deleteByAccountId(Long accountId);
+
 
 }

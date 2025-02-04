@@ -5,10 +5,12 @@ import org.example.loansservice.account.RestAccount;
 import org.example.loansservice.dto.AccountDto;
 import org.example.loansservice.entity.Loan;
 import org.example.loansservice.exception.ResourceNotFoundException;
+import org.example.loansservice.kafka.LoanKafkaConsumer;
 import org.example.loansservice.repository.LoanRepository;
 import org.example.loansservice.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +22,9 @@ public class LoanServiceImpl implements LoanService {
 
     @Autowired
     private RestAccount restAccount;
+
+    @Autowired
+    private LoanKafkaConsumer loanKafkaConsumer;
 
     public List<Loan> getAllLoans() {
         return loanRepository.findAll();
@@ -43,6 +48,13 @@ public class LoanServiceImpl implements LoanService {
 
     public void deleteLoan(Long id) {
         loanRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByAccountId(Long accountId) {
+        loanKafkaConsumer.sendAccountDeleteEvent(accountId);
+        loanRepository.deleteByAccountId(accountId);
     }
 }
 

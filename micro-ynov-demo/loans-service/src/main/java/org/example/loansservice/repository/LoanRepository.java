@@ -8,5 +8,6 @@ import java.util.List;
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     List<Loan> findByAccountId(Long accountId);
+    void deleteByAccountId(Long accountId);
 
 }

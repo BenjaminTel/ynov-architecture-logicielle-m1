@@ -6,13 +6,18 @@ import org.example.cardservice.entity.Card;
 import org.example.cardservice.exception.ResourceNotFoundException;
 import org.example.cardservice.repository.CardRepository;
 import org.example.cardservice.service.CardService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class CardServiceImpl implements CardService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CardServiceImpl.class);
 
     @Autowired
     private CardRepository cardRepository;
@@ -42,5 +47,12 @@ public class CardServiceImpl implements CardService {
 
     public void deleteCard(Long id) {
         cardRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCardByAccountId(Long accountId) {
+        cardRepository.deleteByAccountId(accountId);
+        LOGGER.info("Delete card by account id {}", accountId);
     }
 }
